@@ -1,6 +1,6 @@
-convert json data to js classes objects so they can be sorted properly
-  -create object class
-  -loop json data into individual objects/class instances
-  -add method for default sorting
-  -add class collections? (not available this isn't java dumbass)
-  -add javascript onclicks to table headers
+- convert json data to js classes objects so they can be sorted properly
+  - create object class
+  - loop json data into individual objects/class instances
+  - add method for default sorting
+  - add class collections? (not available this isn't java dumbass)
+  - add javascript onclicks to table headers
