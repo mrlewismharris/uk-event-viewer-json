@@ -6,23 +6,23 @@
 <style>
 body {margin:0px;}
 #banner {width:100%;height:48px;font-size:28px;background-color:#fff;font-weight:bold;text-align:center}
+#img-link {padding-bottom:22px;width:100%;height:18px;font-size:16px;background-color:#fff;font-weight:bold;text-align:center}
 table {width:100%;}
 thead {background-color:#ddd}
 </style>
 </head>
 <body>
-
 <div id="banner">UK Regional Events Viewer</div>
-
+<div id="img-link"><a href="https://lh3.googleusercontent.com/SwGg0QS3INjQqwAj8LaYynVOLXOzq5aLdfmbpE78yC-j5C7Qp-4vrFHTITjL0sykRDCAYZeg3tV6Ffi8544CoT06J9QI2IkT2Xc_vW4a4TKJ5HOkg1vLWFZU5upL=w830">Map image link</a></div>
 <table>
 	<thead>
 		<tr>
 			<th>Event Name</th>
-			<th>Date (MM/DD/YYYY)</th>
+			<th>Date (m/d/y)</th>
 			<th>Time</th>
 			<th>Region</th>
 			<th>City</th>
-			<th>Link?</th>
+			<th>Link</th>
 		</tr>
 	</thead>
 	<tbody id="data">
@@ -44,29 +44,21 @@ $.getJSON('https://spreadsheets.google.com/feeds/cells/10xnuMJFLxHsutoBZvklS-zCF
 			currentRow=result.feed.entry[i].gs$cell.row;
 			tempRow.push(result.feed.entry[i].gs$cell.inputValue);
 		}
-		//[result.feed.entry[i].gs$cell.col,
-		//result.feed.entry[i].gs$cell.row,
-		//result.feed.entry[i].gs$cell.inputValue]);
 	}
 	console.log(rows);
 	for (var i=1;i<rows.length;i++) {
-		var d = '<tr><th>'+rows[i][1]+'</th>\
+		var link = "N/A";
+		if (rows[i][6]!=="N/A") {
+			link = "<a href='"+rows[i][6]+"'>Click here</a>";
+		}
+		var newRow = '<tr><th>'+rows[i][1]+'</th>\
 		<th>'+rows[i][2]+'</th>\
 		<th>'+rows[i][3]+'</th>\
 		<th>'+rows[i][4]+'</th>\
-		<th>'+rows[i][5]+'</th></tr>'
-	$('#data').append(d);
+		<th>'+rows[i][5]+'</th>\
+		<th>'+link+'</th></tr>'
+	$('#data').append(newRow);
 	}
 })
 </script>
 </html>
-
-
-
-
-
-
-
-
-
-
