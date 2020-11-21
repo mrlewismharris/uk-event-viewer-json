@@ -1,4 +1,4 @@
-- convert json data to js classes objects so they can be sorted properly
+- [ ] convert json data to js classes objects so they can be sorted properly
   - [x] create object class
   - [ ] loop json data into individual objects/class instances
   - [ ] add method for default sorting
