@@ -14,4 +14,8 @@
   - [ ] website link (containing certain keywords)
   - [ ] search by region map (clickable svg)
   - [ ] city search
-
+- [ ] Add AJAX
+  - [ ] Loop loads json data
+  - [ ] Counter to show when page was last refreshed
+  - [ ] Counter to show when data was last available
+  - [ ] Loop replaces table data
