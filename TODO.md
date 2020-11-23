@@ -1,11 +1,11 @@
-- [ ] convert json data to js classes objects so they can be sorted properly
+- [x] convert json data to js classes objects so they can be sorted properly
   - [x] create object class
   - [x] loop json data into individual objects/class instances
   - [x] add function to "print" event object into the table
   - [x] add method for default sorting
   - [x] add class collections? (not available this isn't java dumbass just use object arrays)
   - [x] add javascript onclicks to table headers (switch done - sorts aren't working)
-  - [ ] add sorting onclick of table headers
+- [ ] add sorting onclick of table headers
 - [ ] Add "Show past events" button (show/hide events with date older than current date)
 - [ ] simple search function
 - [ ] give past events a different colour background
