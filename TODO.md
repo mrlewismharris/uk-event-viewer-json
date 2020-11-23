@@ -15,7 +15,7 @@
   - [ ] search by region map (clickable svg)
   - [ ] city search
 - [ ] Add AJAX
-  - [ ] Loop loads json data
-  - [ ] Counter to show when page was last refreshed
+  - [x] Loop loads json data
+  - [x] Counter to show when page was last refreshed
   - [ ] Counter to show when data was last available
-  - [ ] Loop replaces table data
+  - [x] Loop replaces table data
