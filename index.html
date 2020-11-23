@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <style>
-body {margin:0px;}
+body {margin:0px}
 #banner {width:100%;height:48px;font-size:28px;background-color:#fff;font-weight:bold;text-align:center}
 #img-link {padding-bottom:40px;width:100%;height:18px;font-size:16px;background-color:#fff;font-weight:bold;text-align:center}
 table {width:100%;cursor:default;font-family:arial;font-size:14px}
@@ -16,11 +16,14 @@ tbody tr:hover {background-color:#eee}
 	-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;
     -moz-user-select: none;-ms-user-select: none;user-select: none;
 }
+#toggleAjax {position:fixed;background:#999;top:0px;left:0px;cursor:pointer;padding:2px 7px;font-family:arial}
+#lastUpdate {opacity:0;position:fixed;background:#ddd;top:28px;left:6px;padding:8px 2px;max-width:20%;transition:opacity 0.2s;text-align:center;}
 </style>
 </head>
 <body>
-<div id="banner">UK Regional Events Viewer</div>
-<div id="img-link"><a href="https://lh3.googleusercontent.com/SwGg0QS3INjQqwAj8LaYynVOLXOzq5aLdfmbpE78yC-j5C7Qp-4vrFHTITjL0sykRDCAYZeg3tV6Ffi8544CoT06J9QI2IkT2Xc_vW4a4TKJ5HOkg1vLWFZU5upL=w830">Map image link</a><br><a href="https://docs.google.com/forms/d/e/1FAIpQLSe3mGKbNiIp4Wn9NffZvRwfTGbzslQ1D5c0k7SRw46GaKz1KQ/viewform">Add to this list</a></div>
+<!-- Last Updated: 23/11/2020 @ 12:59pm v1.1 -->
+<div id="banner">Events Viewer (Google Sheets JSON Demo)</div>
+<div id="img-link"><a href="https://lh3.googleusercontent.com/SwGg0QS3INjQqwAj8LaYynVOLXOzq5aLdfmbpE78yC-j5C7Qp-4vrFHTITjL0sykRDCAYZeg3tV6Ffi8544CoT06J9QI2IkT2Xc_vW4a4TKJ5HOkg1vLWFZU5upL=w830">Open map image link</a><br><a href="https://docs.google.com/forms/d/e/1FAIpQLSe3mGKbNiIp4Wn9NffZvRwfTGbzslQ1D5c0k7SRw46GaKz1KQ/viewform">Add to this list (Google Form)</a></div>
 <table>
 	<thead>
 		<tr class="noselect">
@@ -35,6 +38,8 @@ tbody tr:hover {background-color:#eee}
 	<tbody id="data">
 	</tbody>
 </table>
+	<div id="toggleAjax" class="noselect"><a id="toggleAjaxTxt" onclick="toggleAjaxLoop()">Auto-Refresh (AJAX): On</a><span id="cntdown"> / 0</span></div>
+	<div id="lastUpdate" class="noselect">Last Update: N/A</div>
 </body>
 <script>
 class event {
@@ -50,6 +55,14 @@ class event {
 var eventsArray = [];
 var rows = [];
 $.getJSON('https://spreadsheets.google.com/feeds/cells/10xnuMJFLxHsutoBZvklS-zCFaL26jsov3msCazrHlxA/1/public/full?alt=json', function(result) {
+	parseJsonData(result);
+})
+
+function parseJsonData(result) {
+	$('#data').html('');
+	eventsArray = [];
+	//console.log(eventsArray);
+	rows = [];
 	var tempRow = [];
 	var currentRow = -1;
 	for (var i=7;i<result.feed.entry.length;i++) {
@@ -76,21 +89,8 @@ $.getJSON('https://spreadsheets.google.com/feeds/cells/10xnuMJFLxHsutoBZvklS-zCF
 		eventsArray.push(objTemp);
 		delete objTemp;
 	}
-	/*for (var i=1;i<rows.length;i++) {
-		var link = "N/A";
-		if (rows[i][6]!=="N/A") {
-			link = "<a href='"+rows[i][6]+"'>Click here</a>";
-		}
-		var newRow = '<tr><th>'+rows[i][1]+'</th>\
-		<th>'+rows[i][2]+'</th>\
-		<th>'+rows[i][3]+'</th>\
-		<th>'+rows[i][4]+'</th>\
-		<th>'+rows[i][5]+'</th>\
-		<th>'+link+'</th></tr>'
-	$('#data').append(newRow);
-	}*/
 	reloadTable();
-})
+}
 
 function reloadTable(sort) {
 	$('#data').html('');
@@ -100,38 +100,77 @@ function reloadTable(sort) {
 			sortedArray = eventsArray.sort(function(a,b){return new Date(b.date) + new Date(a.date)});
 			break;
 		case "name":
-			sortedArray = eventsArray.sort(function(a,b){return a.name - b.name});
+			sortedArray = [];
 			break;
 		case "region":
-			sortedArray = eventsArray.sort(function(a,b){return a.region - b.region});
+			sortedArray = [];
 			break;
 		case "city":
-			sortedArray = eventsArray.sort(function(a,b){return a.city - b.city});
+			sortedArray = [];
 			break;
 		case "link":
-			sortedArray = eventsArray.sort(function(a,b){return a.link - b.link});
+			sortedArray = [];
 			break;
 		default:
 			sortedArray = eventsArray.sort(function(a,b){return new Date(b.date) - new Date(a.date)});
 			break;
 	}
-	for (var i=0;i<eventsArray.length;i++) {
-		console.log(sortedArray[i]);
-		addToTable(sortedArray[i]);
+	addToTable(sortedArray);
+}
+
+function addToTable(eventArray) {
+	for (var i=0;i<eventArray.length;i++) {
+		var formattedDate = eventArray[i].date.getFullYear() + "-" + eventArray[i].date.getMonth() + "-" + eventArray[i].date.getDate();
+		var newRow = '<tr><th>'+eventArray[i].name+'</th>\
+			<th>'+formattedDate+'</th>\
+			<th>'+eventArray[i].time+'</th>\
+			<th>'+eventArray[i].region+'</th>\
+			<th>'+eventArray[i].city+'</th>\
+			<th>'+eventArray[i].url+'</th></tr>'
+		$('#data').append(newRow);
 	}
 }
 
-function addToTable(event) {
-	var formattedDate = event.date.getFullYear() + "-" + event.date.getMonth() + "-" + event.date.getDate();
-	var newRow = '<tr><th>'+event.name+'</th>\
-		<th>'+formattedDate+'</th>\
-		<th>'+event.time+'</th>\
-		<th>'+event.region+'</th>\
-		<th>'+event.city+'</th>\
-		<th>'+event.url+'</th></tr>'
-	$('#data').append(newRow);
+var ajaxLoopToggle = true;
+var countdownAjax = 11;
+
+function ajaxLoop() {
+	if (ajaxLoopToggle == true) {
+		countdownAjax = countdownAjax - 1;
+		$('#cntdown').html(" / " + countdownAjax);
+		if (countdownAjax==0) {countdownAjax=11;refreshAjax()}
+		setTimeout(function() {ajaxLoop();}, 1000);
+	}
 }
 
+ajaxLoop();
+
+$('#toggleAjax').on('mouseover', function() {
+	$('#lastUpdate').css('opacity', '1');
+});
+
+$('#toggleAjax').on('mouseout', function() {
+	$('#lastUpdate').css('opacity', '0');
+});
+
+function toggleAjaxLoop() {
+	if (ajaxLoopToggle==false) {
+		$('#toggleAjaxTxt').html('Auto-Refresh (AJAX): On');
+		ajaxLoopToggle = true;
+		ajaxLoop();
+	} else {
+		$('#toggleAjaxTxt').html('Auto-Refresh (AJAX): Off');
+		ajaxLoopToggle = false;
+	}
+}
+
+function refreshAjax() {
+	var d = new Date();
+	$('#lastUpdate').html('Last Update: ' + d);
+$.getJSON('https://spreadsheets.google.com/feeds/cells/10xnuMJFLxHsutoBZvklS-zCFaL26jsov3msCazrHlxA/1/public/full?alt=json', function(result) {
+	parseJsonData(result);
+});
+}
 
 </script>
 </html>
