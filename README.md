@@ -1,3 +1,5 @@
+(Deprecated) - This no longer works, either the original sheets link has timed-out or Google no longer support extracting json from a spreadsheet
+
 Live view in GitHub pages:
 https://mrlewismharris.github.io/uk-event-viewer-json/
 
